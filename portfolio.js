@@ -1,138 +1,192 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const cardsWrapper = document.getElementById('cardsWrapper');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const indicators = document.getElementById('indicators');
-  const cards = document.querySelectorAll('.project-card');
-  
-  let currentIndex = 0;
-  const totalCards = cards.length;
-  const cardsPerView = getCardsPerView();
+/**
+ * Portfolio Slider Controller
+ * Handles navigation, indicators, and responsive behavior for project cards
+ */
 
-  // Create indicators
-  function createIndicators() {
-    indicators.innerHTML = '';
-    for (let i = 0; i < totalCards; i++) {
-      const indicator = document.createElement('span');
-      indicator.classList.add('indicator');
-      if (i === 0) indicator.classList.add('active');
-      indicator.addEventListener('click', () => goToSlide(i));
-      indicators.appendChild(indicator);
-    }
+class PortfolioSlider {
+  constructor() {
+    this.cardsWrapper = document.getElementById('cardsWrapper');
+    this.prevBtn = document.getElementById('prevBtn');
+    this.nextBtn = document.getElementById('nextBtn');
+    this.indicators = document.getElementById('indicators');
+    this.cards = document.querySelectorAll('.project-card');
+    
+    this.currentIndex = 0;
+    this.totalCards = this.cards.length;
+    this.cardsPerView = this.getCardsPerView();
+    this.isTransitioning = false;
+    
+    this.init();
   }
 
-  // Get number of cards per view based on screen size
-  function getCardsPerView() {
-    if (window.innerWidth >= 1200) return 3;
-    if (window.innerWidth >= 768) return 2;
+  init() {
+    if (this.totalCards === 0) return;
+    
+    this.createIndicators();
+    this.setupEventListeners();
+    this.updateSlider();
+    this.handleResize();
+  }
+
+  getCardsPerView() {
+    const width = window.innerWidth;
+    if (width >= 1200) return 3;
+    if (width >= 768) return 2;
     return 1;
   }
 
-  // Update indicators
-  function updateIndicators() {
-    const indicatorElements = document.querySelectorAll('.indicator');
+  createIndicators() {
+    this.indicators.innerHTML = '';
+    const totalSlides = Math.max(1, this.totalCards - this.cardsPerView + 1);
+    
+    for (let i = 0; i < totalSlides; i++) {
+      const indicator = document.createElement('button');
+      indicator.classList.add('indicator');
+      indicator.setAttribute('role', 'tab');
+      indicator.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      indicator.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      
+      if (i === 0) indicator.classList.add('active');
+      
+      indicator.addEventListener('click', () => this.goToSlide(i));
+      this.indicators.appendChild(indicator);
+    }
+  }
+
+  updateIndicators() {
+    const indicatorElements = this.indicators.querySelectorAll('.indicator');
     indicatorElements.forEach((ind, index) => {
-      if (index === currentIndex) {
-        ind.classList.add('active');
-      } else {
-        ind.classList.remove('active');
-      }
+      const isActive = index === this.currentIndex;
+      ind.classList.toggle('active', isActive);
+      ind.setAttribute('aria-selected', isActive ? 'true' : 'false');
     });
   }
 
-  // Go to specific slide
-  function goToSlide(index) {
-    if (index < 0) {
-      currentIndex = totalCards - cardsPerView;
-    } else if (index > totalCards - cardsPerView) {
-      currentIndex = 0;
-    } else {
-      currentIndex = index;
-    }
+  goToSlide(index) {
+    if (this.isTransitioning) return;
     
-    const translateX = -(currentIndex * (100 / cardsPerView));
-    cardsWrapper.style.transform = `translateX(${translateX}%)`;
-    updateIndicators();
+    const maxIndex = Math.max(0, this.totalCards - this.cardsPerView);
+    this.currentIndex = Math.max(0, Math.min(index, maxIndex));
+    
+    this.updateSlider();
+    this.updateIndicators();
   }
 
-  // Next slide
-  function nextSlide() {
-    if (currentIndex < totalCards - cardsPerView) {
-      goToSlide(currentIndex + 1);
-    } else {
-      goToSlide(0);
+  updateSlider() {
+    if (this.totalCards === 0) return;
+    
+    const cardWidth = 100 / this.cardsPerView;
+    const translateX = -(this.currentIndex * cardWidth);
+    
+    this.cardsWrapper.style.transform = `translateX(${translateX}%)`;
+    
+    // Prevent transition during resize
+    if (!this.isTransitioning) {
+      this.cardsWrapper.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     }
   }
 
-  // Previous slide
-  function prevSlide() {
-    if (currentIndex > 0) {
-      goToSlide(currentIndex - 1);
+  nextSlide() {
+    if (this.isTransitioning) return;
+    
+    const maxIndex = Math.max(0, this.totalCards - this.cardsPerView);
+    if (this.currentIndex < maxIndex) {
+      this.goToSlide(this.currentIndex + 1);
     } else {
-      goToSlide(totalCards - cardsPerView);
+      this.goToSlide(0);
     }
   }
 
-  // Event listeners
-  nextBtn.addEventListener('click', nextSlide);
-  prevBtn.addEventListener('click', prevSlide);
+  prevSlide() {
+    if (this.isTransitioning) return;
+    
+    const maxIndex = Math.max(0, this.totalCards - this.cardsPerView);
+    if (this.currentIndex > 0) {
+      this.goToSlide(this.currentIndex - 1);
+    } else {
+      this.goToSlide(maxIndex);
+    }
+  }
 
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') prevSlide();
-    if (e.key === 'ArrowRight') nextSlide();
-  });
+  setupEventListeners() {
+    // Button navigation
+    this.nextBtn.addEventListener('click', () => this.nextSlide());
+    this.prevBtn.addEventListener('click', () => this.prevSlide());
 
-  // Touch/swipe support
-  let touchStartX = 0;
-  let touchEndX = 0;
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        this.prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        this.nextSlide();
+      }
+    });
 
-  cardsWrapper.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  });
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartTime = 0;
 
-  cardsWrapper.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-  });
+    this.cardsWrapper.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartTime = Date.now();
+    }, { passive: true });
 
-  function handleSwipe() {
+    this.cardsWrapper.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const touchDuration = Date.now() - touchStartTime;
+      this.handleSwipe(touchStartX, touchEndX, touchDuration);
+    }, { passive: true });
+
+    // Window resize handler
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => this.handleResize(), 250);
+    });
+  }
+
+  handleSwipe(startX, endX, duration) {
     const swipeThreshold = 50;
-    const diff = touchStartX - touchEndX;
+    const swipeSpeed = 300; // ms
+    const diff = startX - endX;
     
-    if (Math.abs(diff) > swipeThreshold) {
+    if (Math.abs(diff) > swipeThreshold && duration < swipeSpeed) {
       if (diff > 0) {
-        nextSlide();
+        this.nextSlide();
       } else {
-        prevSlide();
+        this.prevSlide();
       }
     }
   }
 
-  // Handle window resize
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      const newCardsPerView = getCardsPerView();
-      if (currentIndex > totalCards - newCardsPerView) {
-        currentIndex = Math.max(0, totalCards - newCardsPerView);
-      }
-      goToSlide(currentIndex);
-    }, 250);
-  });
+  handleResize() {
+    this.isTransitioning = true;
+    this.cardsWrapper.style.transition = 'none';
+    
+    const newCardsPerView = this.getCardsPerView();
+    const maxIndex = Math.max(0, this.totalCards - newCardsPerView);
+    
+    if (this.currentIndex > maxIndex) {
+      this.currentIndex = maxIndex;
+    }
+    
+    this.cardsPerView = newCardsPerView;
+    this.createIndicators();
+    this.updateSlider();
+    this.updateIndicators();
+    
+    // Re-enable transitions after a brief delay
+    setTimeout(() => {
+      this.isTransitioning = false;
+      this.cardsWrapper.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    }, 50);
+  }
+}
 
-  // Auto-slide (optional - can be enabled)
-  // let autoSlideInterval = setInterval(nextSlide, 5000);
-  
-  // Pause auto-slide on hover
-  // cardsWrapper.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-  // cardsWrapper.addEventListener('mouseleave', () => {
-  //   autoSlideInterval = setInterval(nextSlide, 5000);
-  // });
-
-  // Initialize
-  createIndicators();
-  goToSlide(0);
+// Initialize slider when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  new PortfolioSlider();
 });
-

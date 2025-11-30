@@ -1,0 +1,25 @@
+{
+  "name": "Hamza Portfolio",
+  "short_name": "Hamza",
+  "description": "Portfolio website of Hamza - CS Student and Frontend Developer",
+  "start_url": "/portfolio-website/",
+  "display": "standalone",
+  "background_color": "#150b28",
+  "theme_color": "#a855f7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "linux.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "linux.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
