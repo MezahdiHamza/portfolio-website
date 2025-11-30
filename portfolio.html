@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio - HAMZA PORTFOLIO</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div id="navbar">
+      <div id="logo">
+        <h2>HAMZA</h2>
+      </div>
+
+      <div id="menu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutme.html">About Me</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="socialmedia.html">Social Media</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <button onclick="window.location.href='contact.html'">Contact</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="portfolio-container">
+      <h1 class="portfolio-title">My Projects</h1>
+      <p class="portfolio-subtitle">Check out some of my recent work</p>
+      
+      <div class="cards-slider-container">
+        <button class="slider-btn prev-btn" id="prevBtn" aria-label="Previous project">
+          <span>&#8249;</span>
+        </button>
+        
+        <div class="cards-wrapper" id="cardsWrapper">
+          <!-- Project Card 1 -->
+          <div class="project-card">
+            <div class="card-image">
+              <img src="project1.jpg" alt="Project 1" onerror="this.src='/images/placeholder.jpg'">
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Project Title 1</h3>
+              <p class="card-description">Description of my first project.</p>
+              <div class="card-tech">
+                <span class="tech-tag">HTML</span>
+                <span class="tech-tag">CSS</span>
+                <span class="tech-tag">JavaScript</span>
+              </div>
+              <div class="card-links">
+                <a href="#" class="card-link" target="_blank">Live Demo</a>
+                <a href="#" class="card-link" target="_blank">GitHub</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card 2 -->
+          <div class="project-card">
+            <div class="card-image">
+              <img src="project2.jpg" alt="Project 2" onerror="this.src='/images/placeholder.jpg'">
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Project Title 2</h3>
+              <p class="card-description">Description of my second project.</p>
+              <div class="card-tech">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">MongoDB</span>
+              </div>
+              <div class="card-links">
+                <a href="#" class="card-link" target="_blank">Live Demo</a>
+                <a href="#" class="card-link" target="_blank">GitHub</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card 3 -->
+          <div class="project-card">
+            <div class="card-image">
+              <img src="project3.jpg" alt="Project 3" onerror="this.src='/images/placeholder.jpg'">
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Project Title 3</h3>
+              <p class="card-description">Description of my third project.</p>
+              <div class="card-tech">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Django</span>
+                <span class="tech-tag">PostgreSQL</span>
+              </div>
+              <div class="card-links">
+                <a href="#" class="card-link" target="_blank">Live Demo</a>
+                <a href="#" class="card-link" target="_blank">GitHub</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card 4 -->
+          <div class="project-card">
+            <div class="card-image">
+              <img src="project4.jpg" alt="Project 4" onerror="this.src='/images/placeholder.jpg'">
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Project Title 4</h3>
+              <p class="card-description">Description of my fourth project.</p>
+              <div class="card-tech">
+                <span class="tech-tag">Vue.js</span>
+                <span class="tech-tag">Express</span>
+                <span class="tech-tag">SQLite</span>
+              </div>
+              <div class="card-links">
+                <a href="#" class="card-link" target="_blank">Live Demo</a>
+                <a href="#" class="card-link" target="_blank">GitHub</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card 5 -->
+          <div class="project-card">
+            <div class="card-image">
+              <img src="project5.jpg" alt="Project 5" onerror="this.src='/images/placeholder.jpg'">
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Project Title 5</h3>
+              <p class="card-description">Description of the fifth project.</p>
+              <div class="card-tech">
+                <span class="tech-tag">TypeScript</span>
+                <span class="tech-tag">Next.js</span>
+                <span class="tech-tag">Tailwind</span>
+              </div>
+              <div class="card-links">
+                <a href="#" class="card-link" target="_blank">Live Demo</a>
+                <a href="#" class="card-link" target="_blank">GitHub</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="slider-btn next-btn" id="nextBtn" aria-label="Next project">
+          <span>&#8250;</span>
+        </button>
+      </div>
+
+      <div class="slider-indicators" id="indicators"></div>
+    </div>
+  </main>
+
+  <script src="portfolio.js"></script>
+</body>
+</html>
+
